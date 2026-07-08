@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: lordsbot-web
+    env: docker
+    plan: standard
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: RESOLUTION
+        value: 1280x720
+      - key: VNC_PASSWORD
+        value: lordsbot
