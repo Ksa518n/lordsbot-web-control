@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     xfce4 \
     xfce4-terminal \
     supervisor \
+    unzip \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y wine64 wine32 \
@@ -30,8 +31,13 @@ RUN apt-get update && apt-get install -y \
 RUN useradd -m -s /bin/bash wineuser
 WORKDIR /home/wineuser
 
-# نسخ ملفات التطبيق
-COPY --chown=wineuser:wineuser app /home/wineuser/app
+# تحميل التطبيق من GitHub Release
+RUN wget https://github.com/Ksa518n/lordsbot-web-control/releases/download/v1.0.0/app.zip \
+    && unzip app.zip \
+    && rm app.zip \
+    && chown -R wineuser:wineuser /home/wineuser
+
+# نسخ ملفات التكوين
 COPY --chown=wineuser:wineuser supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --chown=wineuser:wineuser start.sh /home/wineuser/start.sh
 
