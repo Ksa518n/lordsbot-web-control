@@ -57,10 +57,15 @@ COPY --chown=wineuser:wineuser start.sh /home/wineuser/start.sh
 RUN chmod +x /home/wineuser/start.sh
 
 # إعداد ملفات X11 للمستخدم وضمان الصلاحيات
-RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && \
-    chown -R wineuser:wineuser /tmp/.X11-unix
+# استخدام مجلد بديل لـ X11 لتجنب مشاكل الصلاحيات في Render
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
+
+# تأكيد ملكية الملفات للمستخدم
+RUN chown -R wineuser:wineuser /home/wineuser /opt/novnc
 
 USER wineuser
+ENV XDG_RUNTIME_DIR=/tmp/runtime-wineuser
+RUN mkdir -p $XDG_RUNTIME_DIR && chmod 700 $XDG_RUNTIME_DIR
 
 # فتح المنفذ الذي سيستخدمه Render للمتصفح
 EXPOSE 8080
