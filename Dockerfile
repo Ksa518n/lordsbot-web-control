@@ -38,7 +38,10 @@ RUN git clone https://github.com/novnc/noVNC.git /opt/novnc \
     && ln -s /opt/novnc/vnc.html /opt/novnc/index.html
 
 # إنشاء مستخدم لتشغيل التطبيق بأمان
-RUN useradd -m -s /bin/bash wineuser
+RUN useradd -m -s /bin/bash wineuser && \
+    mkdir -p /home/wineuser/.wine && \
+    chown -R wineuser:wineuser /home/wineuser
+
 WORKDIR /home/wineuser
 
 # تحميل التطبيق من GitHub Release
@@ -53,8 +56,9 @@ COPY --chown=wineuser:wineuser start.sh /home/wineuser/start.sh
 
 RUN chmod +x /home/wineuser/start.sh
 
-# إعداد ملفات X11 للمستخدم
-RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
+# إعداد ملفات X11 للمستخدم وضمان الصلاحيات
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && \
+    chown -R wineuser:wineuser /tmp/.X11-unix
 
 USER wineuser
 
