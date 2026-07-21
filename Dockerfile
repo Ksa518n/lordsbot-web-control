@@ -22,9 +22,11 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     unzip \
     x11-utils \
+    dbus-x11 \
+    libxv1 \
     && dpkg --add-architecture i386 \
     && apt-get update \
-    && apt-get install -y wine64 wine32 \
+    && apt-get install -y wine64 wine32 wine-stable \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

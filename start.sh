@@ -13,5 +13,17 @@ do
 done
 
 echo "Xvfb is ready. Starting LordsMobileBot..."
+
+# إنشاء مجلد Wine إذا لم يكن موجوداً
+if [ ! -d "$WINEPREFIX" ]; then
+    echo "Initializing Wine prefix..."
+    winecfg > /dev/null 2>&1
+    sleep 5
+fi
+
 cd /home/wineuser/app
-wine LordsMobileBot.exe
+# تشغيل البوت مع إبقاء السكربت يعمل حتى لو فشل البوت مؤقتاً
+wine LordsMobileBot.exe || echo "Bot exited with error code $?"
+
+# إبقاء السكربت يعمل لمنع supervisord من إعادة التشغيل السريعة جداً
+sleep 10
