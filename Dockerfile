@@ -24,11 +24,17 @@ RUN apt-get update && apt-get install -y \
     x11-utils \
     dbus-x11 \
     libxv1 \
+    xdotool \
     && dpkg --add-architecture i386 \
     && apt-get update \
-    && apt-get install -y wine64 wine32 wine-stable \
+    && apt-get install -y wine64 wine32 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# تثبيت noVNC بشكل يدوي لضمان المسارات
+RUN git clone https://github.com/novnc/noVNC.git /opt/novnc \
+    && git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify \
+    && ln -s /opt/novnc/vnc.html /opt/novnc/index.html
 
 # إنشاء مستخدم لتشغيل التطبيق بأمان
 RUN useradd -m -s /bin/bash wineuser
@@ -45,6 +51,9 @@ COPY --chown=wineuser:wineuser supervisord.conf /etc/supervisor/conf.d/superviso
 COPY --chown=wineuser:wineuser start.sh /home/wineuser/start.sh
 
 RUN chmod +x /home/wineuser/start.sh
+
+# إعداد ملفات X11 للمستخدم
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
 
 USER wineuser
 

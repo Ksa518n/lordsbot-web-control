@@ -5,14 +5,23 @@ export WINEARCH=win32
 export DISPLAY=:99
 
 # الانتظار حتى تفتح الواجهة الرسومية (Xvfb)
-echo "Waiting for Xvfb..."
-until xset -q -display :99 > /dev/null 2>&1
-do
-    echo "Xvfb is not ready yet, waiting..."
+echo "Waiting for Xvfb on DISPLAY :99..."
+for i in {1..30}; do
+    if xset -q -display :99 > /dev/null 2>&1; then
+        echo "Xvfb is ready!"
+        break
+    fi
+    echo "Waiting for Xvfb... ($i/30)"
     sleep 2
 done
 
-echo "Xvfb is ready. Starting LordsMobileBot..."
+# التأكد من وجود مدير النوافذ (اختياري ولكن يساعد Wine)
+if ! pgrep -x "xfwm4" > /dev/null; then
+    echo "Starting window manager..."
+    xfwm4 --daemon
+fi
+
+echo "Starting LordsMobileBot..."
 
 # إنشاء مجلد Wine إذا لم يكن موجوداً
 if [ ! -d "$WINEPREFIX" ]; then
