@@ -6,6 +6,8 @@ services:
     region: oregon
     healthCheckPath: /
     envVars:
+      - key: PORT
+        value: 8080
       - key: RESOLUTION
         value: 1280x720
       - key: VNC_PASSWORD

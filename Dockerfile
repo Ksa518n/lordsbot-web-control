@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     xfce4-terminal \
     supervisor \
     unzip \
+    x11-utils \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y wine64 wine32 \
